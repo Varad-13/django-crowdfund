@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="columns box">
+	<div class="column content">
+	    <h1>Payment ID</h1>
+            {% for transaction in transactions %}
+		<div class="column">
+	        <p>{{ transaction.payment_id }}
+		</div>
+            {% endfor %}
+        </div>
+	<div class="column content">
+	    <h1>Post URL</h1>
+	    {% for transaction in transactions %}
+		<div class="column">
+		<a href="{% url 'detail' url=transaction.post_id %}"
+		<p>{{ transaction.post_id }}
+		</a>
+		</div>
+	    {% endfor %}
+	</div>
+    </div>
+{% endblock %}

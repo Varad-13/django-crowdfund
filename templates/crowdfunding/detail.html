@@ -1,0 +1,166 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="box" style="display: flex; flex-direction: column; justify-content: space-between; min-height: calc(100vh - 60px);">
+  <div class="columns is-variable">
+    <div class="column" style="margin-right: 1.5rem; margin-left: 1.5rem; margin-top: 1rem;">
+      {% if post.video and post.thumbnail %}
+        <div class="columns is-multiline is-centered">
+          <!-- Video Column -->
+          <div class="column is-desktop-half">
+            <video autoplay controls muted style="object-fit: contain; border-radius: 1vh; width: 100%;">
+              <source src="{{ post.video.url }}" type="video/mp4">
+              <source src="{{ post.video.url }}" type="video/mov">
+              <source src="{{ post.video.url }}" type="video/avi">
+              <source src="{{ post.video.url }}" type="video/webm">
+              <source src="{{ post.video.url }}" type="video/mkv">
+              Your browser does not support the video tag.
+            </video>
+            <!-- Date -->
+            <h2 class="subtitle is-5 has-text-grey">{{ created_at | date:'M d Y'}}</h2>
+            <!-- Title -->
+            <h1 class="title has-text-black is-3" style="display: flex; justify-content: space-between; align-items: center;">
+            {{ title }}
+            </h1>
+            <!-- Intro -->
+            <p class="has-text-dark">{{ intro }}</p>
+            <strong>Total amount raised: {{post.total_amount}}</strong>
+            {% if request.user.username %}
+            <div class="btn_container">
+              <!-- Payment Button -->
+              <a class="hollow button" id="pay-btn" style="width: 200px; height: 60px; border-radius: 2vh; font-size: 18px;">Donate Rs. {{ amount }}</a>
+            </div>
+            {% else %}
+            {% load i18n %}
+            {% load account socialaccount %}
+            {% get_providers as socialaccount_providers %}
+            <p><strong>Please <a href="{% provider_login_url "google" %}">login</a> to donate</strong></p>
+            {% endif %}
+            <div class="column is-flex" style="display: flex; flex-direction: row;">
+              <p class="has-text-dark" style="align-self: flex-left; margin-top: 2.5px; margin-right: 0.5rem;"><a href="{% url 'user' author=post.author %}">Author: {{ post.author }}</a></p>
+              {% if post.author == request.user.username %}
+                <div class="buttons" style="align-items: right;">
+                  <form action="{% url 'edit_post' author=post.author url=post.url %}" method="get" style="margin-right: 0.5rem;">
+                      <button class="button is-info is-small" type="submit">
+                          <span class="icon">
+                              <i class="fas fa-edit"></i>
+                          </span>
+                      </button>
+                  </form>
+                  <form action="{% url 'delete_post' url=post.url %}" method="post" style="margin-right: 0.5rem;">
+                      {% csrf_token %}
+                      <button class="button is-danger is-small" type="submit">
+                          <span class="icon">
+                              <i class="fas fa-trash"></i>
+                          </span>
+                      </button>
+                  </form>
+                </div>
+              {% endif %}
+          </div>
+          </div>
+          <!-- Image Column -->
+          <div class="column is-desktop-half">
+            <img src="{{ post.thumbnail.url }}" alt="{{ post.title }} Thumbnail" style="object-fit: contain; border-radius: 1vh; width: 100%;">
+          </div>
+        </div>
+          <!-- Content Column -->
+          <div class="content is-medium">
+            <!-- Body -->
+            <p class="has-text-dark">{{ body }}</p>
+          </div>
+      {% else %}
+        <div class="columns is-vcentered is-multiline">
+        <div class="column is-9">
+          <!-- Video or Image -->
+          {% if post.video %}
+          <video autoplay controls muted class="is-max-height" style="object-fit: contain; border-radius: 1vh; width: 100%;">
+            <!-- Video source tags go here -->
+          </video>
+          {% else %}
+          {% if post.thumbnail %}
+          <img src="{{ post.thumbnail.url }}" alt="{{ post.title }} Thumbnail" class="is-max-height" style="object-fit: contain; border-radius: 1vh; width: 100%;">
+          {% endif %}
+          {% endif %}
+        </div>
+        <div class="column is-3">
+          <!-- Date -->
+          <h2 class="subtitle is-5 has-text-grey" style="text-align: left;">{{ created_at | date:'M d Y'}}</h2>
+          <!-- Title -->
+          <h1 class="title has-text-black is-3" style="text-align: left;">{{ title }}</h1>
+          <!-- Intro -->
+          <p class="has-text-dark" style="text-align: left;">{{ intro }}</p>
+          {% if request.user.username %}
+          <strong>Total amount raised: {{post.total_amount}}</strong>
+          <div class="btn_container">
+            <!-- Payment Button -->
+            <button class="hollow button" id="pay-btn" style="width: 200px; height: 60px; font-size: 18px; border-radius: 2vh;">Donate Rs. {{ amount }}</button>
+          </div>
+          {% else %}
+          {% load i18n %}
+          {% load account socialaccount %}
+          {% get_providers as socialaccount_providers %}
+          <p><strong>Please <a href="{% provider_login_url "google" %}">login</a> to donate</strong></p>
+          {% endif %}
+            <div class="column is-flex" style="display: flex; flex-direction: row;">
+              <p class="has-text-dark" style="align-self: flex-left ;margin-right: auto;"><a href="{% url 'user' author=post.author %}">Author: {{ post.author }}</a></p>
+              {% if post.author == request.user.username %}
+                  <div class="buttons" style="align-items: right;">
+                      <form action="{% url 'edit_post' author=post.author url=post.url %}" method="get" style="margin-right: 0.5rem;">
+                          <button class="button is-info is-small" type="submit">
+                              <span class="icon">
+                                  <i class="fas fa-edit"></i>
+                              </span>
+                          </button>
+                      </form>
+                      <form action="{% url 'delete_post' url=post.url %}" method="post" style="margin-right: 0.5rem;">
+                          {% csrf_token %}
+                          <button class="button is-danger is-small" type="submit">
+                              <span class="icon">
+                                  <i class="fas fa-trash"></i>
+                              </span>
+                          </button>
+                      </form>
+                  </div>
+              {% endif %}
+          </div>
+          </div>
+        </div>
+        <div class="content is-medium">
+          <p class="has-text-dark">{{ body }}</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+       
+      // Enter the Key ID generated from the Dashboard
+      key: "{{ razorpay_merchant_key }}",
+       
+      amount: "{{ razorpay_amount }}",
+      currency: "{{ currency }}",
+       
+      // Your/store name.
+      name: "Crowdfunding Django",
+       
+      // Pass the `id` obtained in the response of Step 1
+      order_id: "{{ razorpay_order_id }}",
+      callback_url: "{{ callback_url }}",
+    };
+     
+    // initialise razorpay with the options.
+    var rzp1 = new Razorpay(options);
+     
+    // add event listener to the payment button.
+    document.getElementById("pay-btn").onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
+{% endblock %}

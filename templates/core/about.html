@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class ="columns is-centered">
+    <div class="column is-responsive is-7">
+        <div class="box">
+            <section class="section">
+            <h1 class="title has-text-black is-2 has-text-centered">Welcome to Django-Crowdfunding</h1>
+            <p class="has-text-black is-size-4 has-text-centered">Mini Project 1B by Varad Joshi, Faizan Mahimkar, Meris Gada, and Prathamesh Babar</p>
+            <section class="section">
+            {% if request.user.username %}
+                <div class="column has-text-centered">
+                    <!-- Payment Button -->
+                    <a class="hollow button is-centered" id="pay-btn" style="width: 200px; height: 60px; font-size: 18px; border-radius: 2vh;">Donate Us!{{ amount }}</a>
+		</div>
+            {% endif %}
+		<div class="column has-text-centered">
+		    <a class="hollow button is-centered" href="https://github.com/Varad-13/django-crowdfund" id="pay-btn" style="width: 200px; height: 60px; font-size: 18px; border-radius:2vh;">Github Source</a>
+		</div>
+            </section>
+            <h2 class="title has-text-black is-3 has-text-centered">About Us</h2>
+            <p class="has-text-black has-text-justified is-size-5">We are a group of enthusiastic and aspiring developers currently pursuing our studies at a renowned university. As part of our academic project, we have embarked on an exciting journey to develop a crowdfunding platform using Django, a popular Python web framework.</p>
+            </section>
+            
+            <section class="section">
+            <h2 class="title has-text-black is-3 has-text-centered">Our Project:</h2>
+            <p class="has-text-black has-text-justified is-size-5">Our Django-Crowdfunding platform is currently in its early prototype stage, and we are working diligently to bring our vision to life. With your support, we aim to create a user-friendly and robust crowdfunding platform that connects project creators with potential backers, enabling them to raise funds for their innovative ideas and initiatives.</p>
+            <p class="has-text-black has-text-justified is-size-5">With our platform, we aim to create a supportive community where creative individuals can showcase their projects, and backers can contribute towards their success. We believe that crowdfunding can be a powerful tool for democratizing access to resources and funding, allowing innovative ideas to flourish and make a positive impact on society.</p>
+            </section>
+            <section class="section">
+            <h2 class="title has-text-black is-3 has-text-centered">Why Support Us</h2>
+            <p class="has-text-black has-text-justified is-size-5">By supporting our project, you are not only helping us to further develop our prototype but also contributing to the advancement of crowdfunding technology. Your support will provide us with invaluable experience and knowledge as we continue to refine our platform and work towards creating a successful crowdfunding platform.</p>
+            <p class="has-text-black has-text-justified is-size-5">We are grateful for any support you can provide, whether it's financial contributions, feedback, or simply spreading the word about our project. Together, we can make our Django-Crowdfunding platform a reality and contribute to the world of crowdfunding.</p>
+            <p class="has-text-black has-text-justified is-size-5">Thank you for considering supporting our university project. We are excited to have you on this journey with us!</p>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+       
+      // Enter the Key ID generated from the Dashboard
+      key: "{{ razorpay_merchant_key }}",
+       
+      amount: "{{ razorpay_amount }}",
+      currency: "{{ currency }}",
+       
+      // Your/store name.
+      name: "Crowdfunding Django",
+       
+      // Pass the `id` obtained in the response of Step 1
+      order_id: "{{ razorpay_order_id }}",
+      callback_url: "{{ callback_url }}",
+    };
+     
+    // initialise razorpay with the options.
+    var rzp1 = new Razorpay(options);
+     
+    // add event listener to the payment button.
+    document.getElementById("pay-btn").onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
+{% endblock %}

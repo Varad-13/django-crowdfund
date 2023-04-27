@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+  {% if form.errors %}
+    <div class="notification">
+      <div class="errors">
+        <h3>Form Errors:</h3>
+        <ul>
+          {% for field in form %}
+            {% if field.errors %}
+              <li>{{ field.label_tag }}:
+                <ul>
+                  {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+  {% load i18n %}
+  {% load account socialaccount %}
+  {% get_providers as socialaccount_providers %}
+  {% if user.username %}
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-responsive is-5">
+            <form action="{% url 'edit_post' author=post.author url=post.url %}" class="box" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="field">
+                <label for="{{ form.title.auto_id }}" class="label">Post Title</label>
+                {{ form.title }}
+              </div>
+              <div class="field">
+                <label for="{{ form.intro.auto_id }}" class="label">Post Introduction</label>
+                {{ form.intro }}
+              </div>
+              <div class="field">
+                <label for="{{ form.body.auto_id }}" class="label">Description</label>
+                <div class="control">
+                  {{ form.body }}
+                </div>
+              </div>
+              <div class="field">
+                <label for="{{ form.contribution_amount.auto_id }}" class="label">Contribution Amount (in Rupees)</label>
+                {{ form.contribution_amount }}
+              </div>
+              <div class="field">
+                {% if error %}
+                  {{ error }}
+                {% endif %}
+                <label class="label">Thumbnail Image</label>
+                <div class="control">
+                  {{ form.thumbnail }}
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Introduction Video</label>
+                <div class="control">
+                  {{ form.video }}
+                </div>
+              </div>
+              <div class="field">
+                <button class="button is-success" type="submit">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="notification">
+      You need to login in order to 
+      <strong>start adding campaigns</strong>
+    </div>
+  {% endif %}
+{% endblock %}

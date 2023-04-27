@@ -1,0 +1,118 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+    <div class="columns is-multiline is-centered">
+    {% if user_posts %}
+        <div class="column box is-full">
+            <h1 class="is-size-1">Your Posts:</h1>
+	    <a href="{% url 'transaction' %}">
+	    <p>Your Transactions </p>
+	    </a>
+        </div>
+        {% for post in user_posts %}
+        <div class="column is-full-mobile is-4-tablet is-3-fullhd"> <!-- Adjust the column width as needed -->
+            <div class="box" style="margin-right: 0.2vh; margin-left: 0.2vh; display: flex; flex-direction: column; justify-content: space-between; ">
+                <a href="{% url 'post_detail' author=post.author url=post.url %}">
+                    <div class="content">                                           
+                        {% if post.thumbnail %}
+                            <img src="{{ post.thumbnail.url }}" alt="{{ post.title }} Thumbnail" style="border-radius: 0.5rem 0.5rem 0.5rem 0.5rem; height: 10rem; width: 100%; object-fit: cover; ">
+                        {% endif %}
+                    </div>
+                    <div class="content" style="align-self: flex-left; min-height: 15rem;">
+                        <h2 class="subtitle is-5 has-text-grey">{{ post.created_at | date:'M d Y'}}</h2>
+                        <h1 class="title has-text-black is-3">{{ post.title }}</h1>
+                        <p class="has-text-dark">{{ post.intro|slice:":100"}}...</p>
+                        <p class="has-text-dark">Total Amount Raised: ₹{{ post.total_amount }}</p>
+                    </div>
+                    <div class="column is-flex" style="display: flex; flex-direction: row;">
+                        <p class="has-text-dark" style="align-self: flex-left ;margin-right: auto;"><a href="{% url 'user' author=post.author %}">Author: {{ post.author }}</a></p>
+                        {% if post.author == request.user.username %}
+                            <div class="buttons" style="align-items: right;">
+                                <form action="{% url 'edit_post' author=post.author url=post.url %}" method="get" style="margin-right: 0.5rem;">
+                                    <button class="button is-info is-small" type="submit">
+                                        <span class="icon">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                                <form action="{% url 'delete_post' url=post.url %}" method="post" style="margin-right: 0.5rem;">
+                                    {% csrf_token %}
+                                    <button class="button is-danger is-small" type="submit">
+                                        <span class="icon">
+                                            <i class="fas fa-trash"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% if posts_donated %}
+            <div class="column box is-full">
+                <h1 class="is-size-1">Posts Your have donated to:</h1>
+            </div>
+            {% for post in posts_donated %}
+            <div class="column is-full-mobile is-4-tablet is-3-fullhd"> <!-- Adjust the column width as needed -->
+                <div class="box" style="margin-right: 0.2vh; margin-left: 0.2vh; display: flex; flex-direction: column; justify-content: space-between; ">
+                    <a href="{% url 'post_detail' author=post.author url=post.url %}">
+                        <div class="content">                                           
+                            {% if post.thumbnail %}
+                                <img src="{{ post.thumbnail.url }}" alt="{{ post.title }} Thumbnail" style="border-radius: 0.5rem 0.5rem 0.5rem 0.5rem; height: 10rem; width: 100%; object-fit: cover; ">
+                            {% endif %}
+                        </div>
+                        <div class="content" style="align-self: flex-left; min-height: 15rem;">
+                            <h2 class="subtitle is-5 has-text-grey">{{ post.created_at | date:'M d Y'}}</h2>
+                            <h1 class="title has-text-black is-3">{{ post.title }}</h1>
+                            <p class="has-text-dark">{{ post.intro|slice:":100"}}...</p>
+                            <p class="has-text-dark">You Donated: ₹{{ post.user_donated }}</p>
+                            <p class="has-text-dark">Total Raised: ₹{{ post.total_amount }}</p>
+                        </div>
+                        <div class="column is-flex" style="display: flex; flex-direction: row;">
+                            <p class="has-text-dark" style="align-self: flex-left ;margin-right: auto;"><a href="{% url 'user' author=post.author %}">Author: {{ post.author }}</a></p>
+                            {% if post.author == request.user.username %}
+                                <div class="buttons" style="align-items: right;">
+                                    <form action="{% url 'edit_post' author=post.author url=post.url %}" method="get" style="margin-right: 0.5rem;">
+                                        <button class="button is-info is-small" type="submit">
+                                            <span class="icon">
+                                                <i class="fas fa-edit"></i>
+                                            </span>
+                                        </button>
+                                    </form>
+                                    <form action="{% url 'delete_post' url=post.url %}" method="post" style="margin-right: 0.5rem;">
+                                        {% csrf_token %}
+                                        <button class="button is-danger is-small" type="submit">
+                                            <span class="icon">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="column is-4"> <!-- Adjust the column width as needed -->
+            <div class="box" style="margin-right: 0.2vh; margin-left: 0.2vh; display: flex; flex-direction: column; justify-content: space-between; border-radius: 1.1vh;">
+                {% if author %}
+                    <h1 class="title has-text-black is-3">No posts found for user {{ author }}</h1>
+                {% else %}
+                    <h1 class="title has-text-black is-3">No Activity Yet!</h1>
+                    <p>When you create a post or make a donation, it appears here!</p>
+                    <a href="{% url 'index' %}">Click here to go home</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
